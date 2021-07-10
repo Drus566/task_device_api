@@ -66,14 +66,6 @@ def get_mac_address():
     mac = ':'.join(mac)
     return mac
 
-def get_ip_address():
-    ip = []
-    for byte in range(4):
-        byte = str(randomrange(256))
-        ip.append(byte)
-    ip = '.'.join(ip)
-    return ip
-
 def is_even(num):
     if num % 2 == 0:
         return True 
