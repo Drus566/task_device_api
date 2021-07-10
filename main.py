@@ -1,7 +1,5 @@
-# aioredis version 2.0.0
 import aioredis
 import aiopg
-import asyncio
 
 from fastapi import FastAPI
 from random import randrange, choice
