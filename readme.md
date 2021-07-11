@@ -43,23 +43,24 @@ uvicorn main:app --reload
 
 # Api
 ## Checking two strings are they anagrams?
-## GET 
-### INPUT: /is_anagram/%first_string%/%second_string%
-http://localhost:8000/is_anagram/solo/loso
-### OUTPUT: { "is_anagram": %are anagram strings?%, "anagram_counter": %count of anagrams in storage% }
-{ "is_anagram": true, "anagram_counter": 1 }
+**GET** 
+*INPUT:* `/is_anagram/<first_string>/<second_string>`
+Example: http://localhost:8000/is_anagram/solo/loso
+*OUTPUT*: `{ "is_anagram": <are anagram strings?>, "anagram_counter": <count of anagrams in storage> }`
+Example: { "is_anagram": true, "anagram_counter": 1 }
 
 ## Adding 10 devices to the database, and adding endpoints to 5 of them
-## POST 
-### INPUT: /add_devices
-http://localhost:8000/add_devices
-### OUTPUT: none 
+**POST**
+*INPUT*: `/add_devices`
+Example: http://localhost:8000/add_devices
+*OUTPUT*: `none`	
 
 ## Get all devices without endpoint grouped by device type
-## GET 
-### INPUT: /get_devices_without_endpoint
-http://localhost:8000/get_devices_without_endpoint
-### OUTPUT: { "zigbee": %count of type device%, "emeter": %count of type device%, "lora": %count of type device%, "gsm": %count of type device% }
+**GET**
+*INPUT*: `/get_devices_without_endpoint`
+Example: http://localhost:8000/get_devices_without_endpoint
+*OUTPUT*: `{ "zigbee": %count of type device%, "emeter": %count of type device%, "lora": %count of type device%, "gsm": %count of type device% }`
+Example:
 {
   "zigbee": 6,
   "emeter": 5,
@@ -67,30 +68,24 @@ http://localhost:8000/get_devices_without_endpoint
   "gsm": 2
 }
 
-## Problems with code
-Could not make a function in the argument of which an asynchronous function is passed
-###
-Source code
+# Problem with code
+If from api will get parameters like in *is_anagram*, then in *Version-1.1* of code: 
 ```
-async def get_devices_without_endpoint(): 
+@app.post("/add_devices/{param}", status_code=201)
+async def add_devices(param: param):
+    await postgres_connect(postgres_add_devices, param)
+```
+need pass **param** in each function of code, but the chain of functions is quite long:
+```
+async def postgres_connect(body, param):
     async with aiopg.create_pool(database=DATABASE, user=USER, password=PASSWORD, host=HOST) as pool:       
         async with pool.acquire() as conn:  
             async with conn.cursor() as cur:
-                await cur.execute(QUERY)
-                result = await cur.fetchall()
-                return dict(result)
+               return await body(cur, param) 
 ```
-Desired code
+Desire do like redis:
 ```
-async def body():
-	await cur.execute(QUERY)
-	result = await cur.fetchall()
-	return dict(result)
-
-async def connection(body):
-	async def get_devices_without_endpoint(): 
-	    async with aiopg.create_pool(database=DATABASE, user=USER, password=PASSWORD, host=HOST) as pool:       
-	        async with pool.acquire() as conn:  
-	            async with conn.cursor() as cur:
-						body()	
+redis = await redis_connect()
+await anagrams_check(redis, str_one, str_two) 
+async def anagrams_check(redis, str_one, str_two):
 ```
