@@ -1,4 +1,16 @@
 # Task 'devices api' for job offer
+# Versions
+## 1.0
+One monolit file `main.py` for whole app
+## 1.1
+Added distributed code
+**FILES**:
+- main.py - entry point app
+- business_logic.py - business logic for app, like a controller of mvc pattern
+- config.py 
+**DIRS**
+- databases - in this dir located `redis.py` and `postgresql.py` for connecting
+- lib - located additional lib with funcs like a `get_mac_address`, `is_even`
 
 # Software
 
@@ -13,6 +25,15 @@
 - uvicorn 0.13.4
 
 # Start
+## Create database and load scheme
+```
+sudo su postgres
+psql
+CREATE DATABASE hardware;
+<ctrl+d>
+psql hardware << ./path/to/test.sql
+```
+## Load web-server
 ```
 cd %folder with project%
 uvicorn main:app --reload
@@ -44,6 +65,30 @@ http://localhost:8000/get_devices_without_endpoint
   "gsm": 2
 }
 
+## Problems with code
+Could not make a function in the argument of which an asynchronous function is passed
+###
+Source code
+```
+async def get_devices_without_endpoint(): 
+    async with aiopg.create_pool(database=DATABASE, user=USER, password=PASSWORD, host=HOST) as pool:       
+        async with pool.acquire() as conn:  
+            async with conn.cursor() as cur:
+                await cur.execute(QUERY)
+                result = await cur.fetchall()
+                return dict(result)
+```
+Desired code
+```
+async def body():
+	await cur.execute(QUERY)
+	result = await cur.fetchall()
+	return dict(result)
 
-
-
+async def connection(body):
+	async def get_devices_without_endpoint(): 
+	    async with aiopg.create_pool(database=DATABASE, user=USER, password=PASSWORD, host=HOST) as pool:       
+	        async with pool.acquire() as conn:  
+	            async with conn.cursor() as cur:
+						body()	
+```
