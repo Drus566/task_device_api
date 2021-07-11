@@ -4,10 +4,12 @@
 One monolit file `main.py` for whole app
 ## 1.1
 Added distributed code
+
 **FILES**:
 - main.py - entry point app
 - business_logic.py - business logic for app, like a controller of mvc pattern
 - config.py 
+
 **DIRS**
 - databases - in this dir located `redis.py` and `postgresql.py` for connecting
 - lib - located additional lib with funcs like a `get_mac_address`, `is_even`
