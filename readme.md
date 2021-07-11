@@ -44,22 +44,34 @@ uvicorn main:app --reload
 # Api
 ## Checking two strings are they anagrams?
 **GET** 
+
 *INPUT:* `/is_anagram/<first_string>/<second_string>`
+
 Example: http://localhost:8000/is_anagram/solo/loso
+
 *OUTPUT*: `{ "is_anagram": <are anagram strings?>, "anagram_counter": <count of anagrams in storage> }`
+
 Example: { "is_anagram": true, "anagram_counter": 1 }
+
 
 ## Adding 10 devices to the database, and adding endpoints to 5 of them
 **POST**
+
 *INPUT*: `/add_devices`
+
 Example: http://localhost:8000/add_devices
+
 *OUTPUT*: `none`	
 
 ## Get all devices without endpoint grouped by device type
 **GET**
+
 *INPUT*: `/get_devices_without_endpoint`
+
 Example: http://localhost:8000/get_devices_without_endpoint
+
 *OUTPUT*: `{ "zigbee": %count of type device%, "emeter": %count of type device%, "lora": %count of type device%, "gsm": %count of type device% }`
+
 Example:
 {
   "zigbee": 6,
